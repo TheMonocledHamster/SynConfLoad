@@ -16,10 +16,12 @@ psql -d Traces -c "\copy dur_staging FROM '~/Work/SynConfLoad/source/traces/Azur
 
 psql -d Traces -c "\i source/data/fn_time.sql"
 
-psql -d Traces -c "INSERT INTO fn_time SELECT DISTINCT (cm.id, cm.ownerid, cm.appid, cm.fnid, cm.trigid, ds.avg_duration, ds.num_exec, \
-                   ds.exec_percentile_1, ds.exec_percentile_25, ds.exec_percentile_50, ds.exec_percentile_75, ds.exec_percentile_99) \
+psql -d Traces -c "INSERT INTO fn_time SELECT cm.id, cm.ownerid, cm.appid, cm.fnid, cm.trigid, ds.avg_duration, ds.num_exec, \
+                   ds.exec_percentile_1, ds.exec_percentile_25, ds.exec_percentile_50, ds.exec_percentile_75, ds.exec_percentile_99 \
                    FROM calls_master AS cm JOIN dur_staging AS ds ON (cm.ownerid,cm.appid,cm.fnid) = (ds.ownerid,ds.appid,ds.fnid);"
 
 psql -d Traces -c "DROP TABLE dur_staging; DROP TABLE calls_master;"
+
+psql -d Traces -c "DELETE FROM fn_time WHERE id IN (SELECT id FROM fn_time GROUP BY id HAVING count(id) > 1) ;"
 
 psql -d Traces -c "ALTER TABLE fn_time ADD PRIMARY KEY (fnid);"
