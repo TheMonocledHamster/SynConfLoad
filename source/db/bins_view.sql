@@ -1,4 +1,5 @@
-create or replace view bins as
+drop if exists view bins;
+create view bins as
 select
 case
 when avg_exec_time between 0 and 10 then 10
