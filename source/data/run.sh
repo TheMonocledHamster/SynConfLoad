@@ -25,3 +25,9 @@ psql -d Traces -c "DROP TABLE dur_staging; DROP TABLE calls_master;"
 psql -d Traces -c "DELETE FROM fn_time WHERE id IN (SELECT id FROM fn_time GROUP BY id HAVING count(id) > 1) ;"
 
 psql -d Traces -c "ALTER TABLE fn_time ADD PRIMARY KEY (fnid);"
+
+psql -d Traces -c "ALTER TABLE fn_time ADD CONSTRAINT fk_fnid FOREIGN KEY (fnid) REFERENCES calls_minute(id);"
+
+psql -d Traces -c "\i source/data/min_bin.sql"
+
+psql -d Traces -c "\i source/data/dist_view.sql"

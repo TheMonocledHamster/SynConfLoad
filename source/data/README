@@ -1,0 +1,7 @@
+drop view exectime_view;
+create view  exectime_view as 
+select avg_exec_time ,sum(reqcount)
+from fn_time ft 
+join calls_minute cm on cm.id = ft.id
+where minuteid between 1 and 10
+group by avg_exec_time;
