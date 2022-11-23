@@ -1,7 +1,8 @@
 import psycopg2 as pg
 import numpy as np
 import csv
-from commons import slo_bins
+
+slo_bins = [10, 15, 20, 30, 50, 80, 120, 180, 270, 410, 620, 930, 1400, 2100, 3150, 4730]
 
 conn = pg.connect(dbname='Traces', user='adi')
 cur = conn.cursor()
