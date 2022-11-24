@@ -1,50 +1,39 @@
-import csv
 import os
 
 from fastapi import FastAPI, APIRouter
 import numpy as np
 
-from arrival_rates.gen_arrivals import slo_bins
+from .arrival_rates.gen_arrivals import slo_bins, dir
+
 
 class LoadServer:
     def __init__(self):
-        pass
+        self.router = APIRouter()
+        self.metrics = {
+            "arrival_rate": [],
+            "resources": [],
+            "latency": 0.0
+        }
+        self.router.add_api_route('/slo', self.set_load, methods=['PUT'])
+        self.router.add_api_route('/metrics', self.get_load, methods=['POST'])
 
-    @classmethod
-    def get_dir(cls):
-        cls.dir = os.path.dirname(os.path.abspath(__file__))
-
-    def set_load(self, slo:int):
-        slo = min([bin for bin in slo_bins if bin > slo])
-        self.load = np.load(os.path.join(self.dir, f'load_{slo}.npy'))
+    def set_load(self, slo:int, weight:int):
+        if not slo <= max(slo_bins)*1.5:
+            raise Exception(f"SLO {slo} is too high")
+        elif slo > max(slo_bins):
+            slo = max(slo_bins)
+        else:
+            slo = min([bin for bin in slo_bins if bin > slo])
+        self.arrivals = np.load(os.path.join(dir, f'load_{slo}.npy'))
     
-    def get_load(self):
+    def load(self):
         pass
+    
+    def get_load(self, action):
+        return self.metrics
 
 
 app = FastAPI()
-router = APIRouter()
 load_server = LoadServer()
-
-dir:str = os.path.dirname(os.path.abspath(__file__)) + "/arrival_rates/"
-slo:int = None
-
-
-@app.put("/slo")
-def set_slo(spec_slo:int):
-    pass
-
-@app.post("/metrics")
-def root(action:int, slo:int):
-    response = main(action, slo)
-    return response
-
-def main(action):
-    path = dir + "slo{}.csv".format(slo)
-    with open() as f:
-        reader = csv.reader(f)
-        data = np.array(reader,shape=(144,2))
-    print(data)
-
-main(0)
-        
+load_server.set_load(70,100)
+app.include_router(load_server.router)
