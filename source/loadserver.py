@@ -4,7 +4,7 @@ from fastapi import FastAPI, APIRouter
 from pydantic import BaseModel
 import numpy as np
 
-from arrival_rates.gen_arrivals import slo_bins, dir, timeframe
+from .arrival_rates.gen_arrivals import slo_bins, dir, timeframe
 
 class LoadSetter(BaseModel):
     slo: int
@@ -59,5 +59,5 @@ class LoadServer:
 app = FastAPI()
 load_server = LoadServer()
 app.include_router(load_server.router)
-load_server.set_load(LoadSetter(slo=100, freq=10000))
-print(load_server.get_load())
+# load_server.set_load(LoadSetter(slo=100, freq=10000))
+# print(load_server.get_load())
