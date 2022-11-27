@@ -4,7 +4,9 @@ import csv
 import os
 
 slo_bins = [10, 15, 20, 30, 50, 80, 120, 180, 270, 410, 620, 930, 1400, 2100, 3150, 4730]
-dir = os.path.dirname(os.path.abspath(__file__))
+timeframe = 10
+dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),str(timeframe))
+
 
 if __name__ == '__main__':
 
