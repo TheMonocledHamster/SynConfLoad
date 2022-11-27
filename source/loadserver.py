@@ -21,7 +21,7 @@ class LoadServer:
         self.router.add_api_route('/load', self.get_load, methods=['POST', 'GET'])
         self.flag = False
 
-    def set_load(self, load: LoadSetter):
+    def set_load(self, load:LoadSetter):
         slo = load.slo
         self.freq = load.freq
         if not slo <= max(slo_bins)*1.5:
@@ -35,7 +35,6 @@ class LoadServer:
         self.flag = True
 
     def calc_util(self):
-        # TODO: fix this
         cpu_base = np.random.randint([4,8,6], [6,12,9])
         cutil = self.weight * cpu_base * self.freq
         mem_base = np.random.randint([4,8,16], [6,12,24])
@@ -43,7 +42,6 @@ class LoadServer:
         return [np.ndarray.tolist(cutil), np.ndarray.tolist(mutil)]
 
     def get_arrival(self):
-        # TODO: recheck types
         for arrival in self.arrivals[:,1]:
             yield arrival
 
@@ -59,5 +57,3 @@ class LoadServer:
 app = FastAPI()
 load_server = LoadServer()
 app.include_router(load_server.router)
-# load_server.set_load(LoadSetter(slo=100, freq=10000))
-# print(load_server.get_load())

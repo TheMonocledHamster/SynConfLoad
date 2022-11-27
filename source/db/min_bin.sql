@@ -1,4 +1,4 @@
-DROP TABLE minute_bins;
+DROP TABLE IF EXISTS minute_bins;
 
 CREATE TABLE minute_bins (
 minuteid int4 NOT NULL,
@@ -8,7 +8,7 @@ CONSTRAINT minute_bins_pk PRIMARY KEY (minuteid)
 
 do $$
 declare
-intrvl integer := 10;
+intrvl integer := 2;
 cntr integer := 1;
 ifloor integer := 1;
 iceiling integer :=0;
