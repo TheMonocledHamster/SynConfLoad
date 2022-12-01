@@ -13,12 +13,11 @@ if __name__ == '__main__':
     conn = pg.connect(dbname='Traces', user='adi')
     cur = conn.cursor()
 
-    cur.execute("SELECT MAX(req_count) FROM bins;")
-    max_arrival = cur.fetchone()[0]
-
     for slo_bin in slo_bins:
         cur.execute("SELECT timeframe_bin,req_count FROM bins WHERE slo_bin={} ORDER BY timeframe_bin;".format(slo_bin))
         arrivals = np.array([[x[0],x[1]] for x in cur.fetchall()], dtype=np.float32)
+        cur.execute("SELECT MAX(req_count) FROM bins WHERE slo_bin={};".format(slo_bin))
+        max_arrival = cur.fetchone()[0]
         arrivals[:,1] = np.round(arrivals[:,1]/max_arrival, 4)
 
         np.save(dir+'/load_{}.npy'.format(slo_bin), arrivals)
