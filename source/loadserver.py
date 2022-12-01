@@ -20,6 +20,7 @@ class LoadServer:
         self.metrics = {
             "arrival_rate": 0.0,
             "load": [0,0],
+            "latency":0.0,
             "done": False
         }
         self.router.add_api_route('/slo', self.set_load, methods=['PUT'])
@@ -67,7 +68,7 @@ class LoadServer:
         return [np.ndarray.tolist(cutil), np.ndarray.tolist(mutil)]
 
     def calc_latency(self):
-        pass
+        return 0
 
     def get_load(self):
         if self.metrics['done']:
@@ -76,6 +77,7 @@ class LoadServer:
             arrival_rate = next(self.step_gen)
             self.metrics["arrival_rate"] = arrival_rate * self.freq
             self.metrics["load"] = self.calc_util()
+            self.metrics["latency"] = self.calc_latency()
         except StopIteration:
             self.metrics['done'] = True
         return self.metrics
