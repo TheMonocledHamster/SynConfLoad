@@ -53,7 +53,7 @@ class LoadServer:
     def new_episode(self):
         self.metrics['done'] = False
         self.episode_lambda = next(self.ep_gen)
-        rand_size = np.random.randint(200, 500)
+        rand_size = np.random.choice([75, 206, 451, 568, 818, 1000, 1212])
         rand_start = np.random.randint(0, len(self.arrivals) - rand_size)
         self.episode_arrivals = self.arrivals[rand_start:rand_start+rand_size]
         self.step_gen = self.step_generator()
