@@ -40,6 +40,7 @@ class LoadServer:
         else:
             slo_bin = min([bin for bin in slo_bins if bin > self.slo])
         self.arrivals = np.load(os.path.join(dir, f'load_{slo_bin}.npy'))[:,1]
+        self.arrivals = np.concatenate((self.arrivals, self.arrivals))
         self.ep_gen = self.episode_generator()
         self.weight = np.log(self.slo) * self.knob
         self.new_episode()
@@ -80,6 +81,8 @@ class LoadServer:
             self.new_episode()
         try:
             arrival_rate = next(self.step_gen)
+            if arrival_rate < 1:
+                arrival_rate = 1
             self.metrics["arrival_rate"] = arrival_rate
             self.metrics["load"] = self.calc_util(arrival_rate)
         except StopIteration:
