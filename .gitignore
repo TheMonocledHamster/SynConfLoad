@@ -129,5 +129,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-traces/
-arrival_rates/*.csv
+source/traces/*
