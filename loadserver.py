@@ -41,7 +41,7 @@ class LoadServer:
             slo_bin = min([bin for bin in slo_bins if bin > self.slo])
         self.arrivals = np.load(os.path.join(dir, f'load_{slo_bin}.npy'))[:,1]
         self.arrivals = np.concatenate((self.arrivals, self.arrivals))
-        self.ep_gen = self.episode_generator()
+        self.ep_gen = iter(self.arrivals)
         self.weight = np.log(self.slo) * self.knob
         self.new_episode()
 
@@ -53,18 +53,14 @@ class LoadServer:
     def new_episode(self):
         self.metrics['done'] = False
         try:
-            self.episode_lambda = next(self.ep_gen)
+            self.episode_lambda = next(self.ep_gen) * self.freq
         except StopIteration:
-            self.ep_gen = self.episode_generator()
-            self.episode_lambda = next(self.ep_gen)
+            self.ep_gen = iter(self.arrivals)
+            self.episode_lambda = next(self.ep_gen) * self.freq
         rand_size = np.random.choice([75, 206, 451, 568, 818, 1000, 1212])
         rand_start = np.random.randint(0, len(self.arrivals) - rand_size)
         self.episode_arrivals = self.arrivals[rand_start:rand_start+rand_size]
         self.step_gen = self.step_generator()
-
-    def episode_generator(self):
-        for arrival in self.arrivals:
-            yield arrival * self.freq
 
     def step_generator(self):
         ratio = self.episode_lambda / sum(self.episode_arrivals)
