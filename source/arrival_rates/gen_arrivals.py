@@ -10,7 +10,7 @@ dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),str(timeframe))
 
 if __name__ == '__main__':
 
-    conn = pg.connect(dbname='Traces', user='adi')
+    conn = pg.connect(dbname='Traces', user='adi') # Change to your own username
     cur = conn.cursor()
 
     for slo_bin in slo_bins:
