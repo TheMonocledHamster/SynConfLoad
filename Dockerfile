@@ -2,21 +2,17 @@ FROM python:3.10-slim
 
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3-pip
+    python3-pip && \
+    mkdir /load
 
 # Install Python packages
 COPY requirements.txt .
-
 RUN pip3 install --no-cache-dir -r requirements.txt && \
-    rm requirements.txt && \
-    mkdir /load
+    rm requirements.txt
 
 # Copy source code
-WORKDIR /load
-COPY arrival_rates      \
-     /load              \
-     loadserver.py      \
-     ./
+COPY arrival_rates /load/arrival_rates
+COPY loadserver.py /load/loadserver.py
 
 # Set user
 USER nobody
