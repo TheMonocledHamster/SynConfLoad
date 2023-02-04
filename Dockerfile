@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip
 
 # Install Python packages
-COPY ./load-gen/requirements.txt .
+COPY requirements.txt .
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
